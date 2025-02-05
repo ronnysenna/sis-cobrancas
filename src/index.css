@@ -1,0 +1,7 @@
+
+/* Reset padrão para evitar margens e paddings inesperados */
+body {
+  @apply m-0 p-0 bg-gray-100 text-gray-900;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
