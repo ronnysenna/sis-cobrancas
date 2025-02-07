@@ -1,14 +1,23 @@
 import axios from "axios";
 
-// URL do Webhook do n8n
-const API_BASE_URL = "https://n8n.ronnysenna.com.br/webhook/cobranca_rastro";
+const API_BASE_URL = "https://n8n.ronnysenna.com.br/webhook/receber_planilha";
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+const enviarArquivoParaN8n = async (arquivo) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", arquivo); // Envia o arquivo como 'file'
 
-export default api;
+    const response = await axios.post(API_BASE_URL, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
+    console.log("Resposta da API:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao enviar o arquivo:", error);
+  }
+};
+
+export { enviarArquivoParaN8n };
