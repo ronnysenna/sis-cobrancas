@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import * as XLSX from "xlsx"; // Biblioteca para processar XLSX
+import * as XLSX from "xlsx";
 import Layout from "../components/Layout";
 import UploadPlanilha from "../components/UploadPlanilha";
 import { enviarArquivoParaN8n } from "../services/api";
+import "bootstrap/dist/css/bootstrap.min.css"; // Importação do Bootstrap
 
 const Dashboard = () => {
   const [arquivo, setArquivo] = useState(null);
   const [planilhaDados, setPlanilhaDados] = useState([]);
-  const [enviando, setEnviando] = useState(false);
   const [mensagem, setMensagem] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   const handleArquivoSelecionado = (file) => {
     setArquivo(file);
@@ -18,18 +19,18 @@ const Dashboard = () => {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: "array" });
 
-      const sheetName = workbook.SheetNames[0]; // Pega a primeira aba
+      const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
 
-      const jsonData = XLSX.utils.sheet_to_json(sheet); // Converte para JSON
-      setPlanilhaDados(jsonData.slice(0, 5)); // Mostra os primeiros 5 registros
+      const jsonData = XLSX.utils.sheet_to_json(sheet);
+      setPlanilhaDados(jsonData);
     };
     reader.readAsArrayBuffer(file);
   };
 
-  const enviarPlanilhaParaN8n = async () => {
+  const handleEnviarArquivo = async () => {
     if (!arquivo) {
-      alert("Nenhum arquivo selecionado para envio.");
+      setMensagem("Nenhum arquivo selecionado!");
       return;
     }
 
@@ -37,60 +38,74 @@ const Dashboard = () => {
     setMensagem("");
 
     try {
-      const resposta = await enviarArquivoParaN8n(arquivo);
-      if (resposta) {
+      console.log("Enviando arquivo:", arquivo.name);
+      const response = await enviarArquivoParaN8n(arquivo);
+
+      if (response) {
         setMensagem("Arquivo enviado com sucesso!");
       } else {
         setMensagem("Erro ao enviar o arquivo.");
       }
     } catch (error) {
       setMensagem("Erro ao enviar o arquivo.");
-      console.error("Erro:", error);
-    } finally {
-      setEnviando(false);
+      console.error("Erro no envio:", error);
     }
+
+    setEnviando(false);
   };
 
   return (
     <Layout>
-      <h1 className="text-primary">Dashboard</h1>
-      <p>Bem-vindo ao sistema de cobrança!</p>
+      <div className="container mt-4">
+        <h1 className="mb-4">Dashboard</h1>
 
-      {/* Componente de Upload */}
-      <UploadPlanilha onFileSelected={handleArquivoSelecionado} />
+        {/* Componente de Upload */}
+        <UploadPlanilha onFileSelected={handleArquivoSelecionado} />
 
-      {/* Exibir prévia dos dados */}
-      {planilhaDados.length > 0 && (
-        <div className="mt-3">
-          <h5>Prévia da Planilha:</h5>
-          <table className="table">
-            <thead>
-              <tr>
-                {Object.keys(planilhaDados[0]).map((key) => (
-                  <th key={key}>{key}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {planilhaDados.map((row, index) => (
-                <tr key={index}>
-                  {Object.values(row).map((value, i) => (
-                    <td key={i}>{value}</td>
+        {/* Exibe mensagem do arquivo selecionado */}
+        {arquivo && <p className="mt-2 text-primary">Arquivo: {arquivo.name}</p>}
+
+        {/* Exibe a tabela apenas se houver dados */}
+        {planilhaDados.length > 0 && (
+          <>
+            {/* Contêiner para permitir rolagem lateral e vertical */}
+            <div className="table-responsive" style={{ maxHeight: "500px", overflowY: "auto", overflowX: "auto" }}>
+              <table className="table table-bordered table-hover" style={{ fontSize: "14px" }}>
+                <thead style={{ backgroundColor: "#007bff", color: "white", position: "sticky", top: "0", zIndex: "2" }}>
+                  <tr>
+                    {Object.keys(planilhaDados[0]).map((coluna, index) => (
+                      <th key={index} className="text-center">{coluna}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {planilhaDados.map((linha, index) => (
+                    <tr key={index}>
+                      {Object.values(linha).map((valor, idx) => (
+                        <td key={idx} className="text-center">{valor}</td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                </tbody>
+              </table>
+            </div>
 
-      {/* Botão de Envio */}
-      <button className="btn btn-success mt-3" onClick={enviarPlanilhaParaN8n} disabled={enviando}>
-        {enviando ? "Enviando..." : "Iniciar Disparo"}
-      </button>
+            {/* Botão para enviar dados ao back-end */}
+            <div className="d-flex justify-content-end">
+              <button 
+                className="btn btn-success mt-3"
+                onClick={handleEnviarArquivo}
+                disabled={enviando}
+              >
+                {enviando ? "Enviando..." : "Enviar Arquivo para o Back-end"}
+              </button>
+            </div>
+          </>
+        )}
 
-      {/* Exibir status do envio */}
-      {mensagem && <p className="mt-3">{mensagem}</p>}
+        {/* Mensagem de status */}
+        {mensagem && <p className="mt-3 text-center">{mensagem}</p>}
+      </div>
     </Layout>
   );
 };
