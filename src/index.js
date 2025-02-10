@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client"; // Import atualizado
 import App from "./App";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -15,10 +15,11 @@ const theme = createTheme({
   },
 });
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root")); // Novo método createRoot
+
+root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <App />
-  </ThemeProvider>,
-  document.getElementById("root")
+  </ThemeProvider>
 );
