@@ -1,30 +1,58 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
-import Layout from "../components/Layout";
-import UploadPlanilha from "../components/UploadPlanilha";
+import { useNavigate } from "react-router-dom";
 import { enviarArquivoParaN8n } from "../services/api";
+import {
+  Container,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  CircularProgress,
+  Alert,
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+} from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import HomeIcon from "@mui/icons-material/Home";
+import SettingsIcon from "@mui/icons-material/Settings";
+import DescriptionIcon from "@mui/icons-material/Description";
 
 const Dashboard = () => {
   const [arquivo, setArquivo] = useState(null);
   const [planilhaDados, setPlanilhaDados] = useState([]);
   const [mensagem, setMensagem] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const navigate = useNavigate();
 
-  const handleArquivoSelecionado = (file) => {
-    setArquivo(file);
+  const handleArquivoSelecionado = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setArquivo(file);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
 
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
 
-      const jsonData = XLSX.utils.sheet_to_json(sheet);
-      setPlanilhaDados(jsonData);
-    };
-    reader.readAsArrayBuffer(file);
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+        setPlanilhaDados(jsonData);
+      };
+      reader.readAsArrayBuffer(file);
+    }
   };
 
   const handleEnviarArquivo = async () => {
@@ -54,58 +82,124 @@ const Dashboard = () => {
   };
 
   return (
-    <Layout>
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Envie Sua Planilha</h1>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      {/* Sidebar */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: 240, boxSizing: "border-box", backgroundColor: "#1976d2", color: "white" },
+        }}
+      >
+        <Typography variant="h6" align="center" sx={{ padding: "16px" }}>
+          Menu
+        </Typography>
+        <Divider />
+        <List>
+          <ListItem button onClick={() => navigate("/dashboard")}>
+            <HomeIcon sx={{ marginRight: 1 }} />
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+          <ListItem button onClick={() => navigate("/relatorio")}>
+            <DescriptionIcon sx={{ marginRight: 1 }} />
+            <ListItemText primary="Relatório" />
+          </ListItem>
+          <ListItem button onClick={() => navigate("/configuracoes")}>
+            <SettingsIcon sx={{ marginRight: 1 }} />
+            <ListItemText primary="Configurações" />
+          </ListItem>
+        </List>
+      </Drawer>
 
-        {/* Componente de Upload */}
-        <UploadPlanilha onFileSelected={handleArquivoSelecionado} />
+      {/* Conteúdo Principal */}
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Container maxWidth="md">
+          <Box my={4} textAlign="center">
+            <Typography variant="h4" component="h1">
+              Envie Sua Planilha
+            </Typography>
+          </Box>
 
-        {/* Exibe mensagem do arquivo selecionado */}
-        {arquivo && <p className="mt-2 text-blue-500">Arquivo: {arquivo.name}</p>}
-
-        {/* Exibe a tabela apenas se houver dados */}
-        {planilhaDados.length > 0 && (
-          <>
-            {/* Contêiner para permitir rolagem lateral e vertical */}
-            <div className="overflow-x-auto overflow-y-auto max-h-80 border border-gray-300 rounded-md shadow-md mt-4">
-              <table className="w-full border-collapse">
-                <thead className="bg-blue-600 text-white sticky top-0">
-                  <tr>
-                    {Object.keys(planilhaDados[0]).map((coluna, index) => (
-                      <th key={index} className="px-4 py-2 text-center border border-gray-300">{coluna}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {planilhaDados.map((linha, index) => (
-                    <tr key={index} className="hover:bg-gray-100">
-                      {Object.values(linha).map((valor, idx) => (
-                        <td key={idx} className="px-4 py-2 text-center border border-gray-300">{valor}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Botão de Envio */}
-            <div className="flex justify-end mt-4">
-              <button 
-                className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300 disabled:bg-gray-400"
-                onClick={handleEnviarArquivo}
-                disabled={enviando}
+          {/* Botão de Upload */}
+          <Box display="flex" alignItems="center" gap={2} mb={2}>
+            <input
+              accept=".xlsx"
+              style={{ display: "none" }}
+              id="upload-file"
+              type="file"
+              onChange={handleArquivoSelecionado}
+            />
+            <label htmlFor="upload-file">
+              <Button
+                variant="contained"
+                color="primary"
+                component="span"
+                startIcon={<UploadFileIcon />}
               >
-                {enviando ? "Enviando..." : "Enviar Arquivo"}
-              </button>
-            </div>
-          </>
-        )}
+                Escolher Arquivo
+              </Button>
+            </label>
 
-        {/* Mensagem de status */}
-        {mensagem && <p className="mt-3 text-center text-gray-700">{mensagem}</p>}
-      </div>
-    </Layout>
+            {arquivo && (
+              <Typography variant="body1" color="textSecondary">
+                {arquivo.name}
+              </Typography>
+            )}
+          </Box>
+
+          {/* Exibe a tabela apenas se houver dados */}
+          {planilhaDados.length > 0 && (
+            <>
+              <TableContainer component={Paper} sx={{ maxHeight: 400, mt: 4 }}>
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      {Object.keys(planilhaDados[0]).map((coluna, index) => (
+                        <TableCell key={index} align="center" sx={{ fontWeight: "bold", backgroundColor: "#1976d2", color: "white" }}>
+                          {coluna}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {planilhaDados.map((linha, index) => (
+                      <TableRow key={index} hover>
+                        {Object.values(linha).map((valor, idx) => (
+                          <TableCell key={idx} align="center">
+                            {valor}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              {/* Botão de Envio */}
+              <Box textAlign="right" mt={3}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={handleEnviarArquivo}
+                  disabled={enviando}
+                  startIcon={enviando ? <CircularProgress size={20} /> : <CloudUploadIcon />}
+                >
+                  {enviando ? "Enviando..." : "Enviar Arquivo"}
+                </Button>
+              </Box>
+            </>
+          )}
+
+          {/* Mensagem de status */}
+          {mensagem && (
+            <Box mt={3}>
+              <Alert severity={mensagem.includes("sucesso") ? "success" : "error"}>{mensagem}</Alert>
+            </Box>
+          )}
+        </Container>
+      </Box>
+    </Box>
   );
 };
 

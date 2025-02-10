@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Box, Button, Typography, Input } from "@mui/material";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 const UploadPlanilha = ({ onFileSelected }) => {
   const [fileName, setFileName] = useState("");
@@ -13,22 +15,35 @@ const UploadPlanilha = ({ onFileSelected }) => {
   };
 
   return (
-    <div className="mb-4">
-      <label className="block text-gray-700 font-medium mb-2">Selecione um arquivo:</label>
-      
-      <input 
-        type="file" 
-        accept=".xlsx" 
-        className="block w-full border border-gray-300 shadow-sm rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        onChange={handleFileChange} 
-      />
-      
+    <Box my={3}>
+      <Typography variant="subtitle1" color="textPrimary" gutterBottom>
+        Selecione um arquivo:
+      </Typography>
+
+      <label htmlFor="upload-file">
+        <Input 
+          type="file" 
+          accept=".xlsx" 
+          id="upload-file" 
+          sx={{ display: "none" }} 
+          onChange={handleFileChange} 
+        />
+        <Button
+          variant="contained"
+          component="span"
+          color="primary"
+          startIcon={<UploadFileIcon />}
+        >
+          Escolher Arquivo
+        </Button>
+      </label>
+
       {fileName && (
-        <p className="mt-2 text-green-600 font-medium">
+        <Typography variant="body2" color="success.main" mt={2}>
           Arquivo selecionado: {fileName}
-        </p>
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 };
 

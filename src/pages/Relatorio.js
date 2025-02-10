@@ -1,6 +1,28 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout";
+import {
+  Container,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Alert,
+  Box,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ReportIcon from "@mui/icons-material/Assessment";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 const Relatorio = () => {
   const [dados, setDados] = useState([]);
@@ -24,44 +46,74 @@ const Relatorio = () => {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Relatório de Mensagens Enviadas</h1>
+      <Drawer variant="permanent" sx={{ width: 240, flexShrink: 0 }}>
+        <List>
+          <ListItem button>
+            <ListItemIcon><DashboardIcon /></ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><ReportIcon /></ListItemIcon>
+            <ListItemText primary="Relatório" />
+          </ListItem>
+          <ListItem button>
+            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemText primary="Configurações" />
+          </ListItem>
+        </List>
+      </Drawer>
+      <Container maxWidth="md">
+        <Box my={4} textAlign="center">
+          <Typography variant="h4" component="h1">
+            Relatório de Mensagens Enviadas
+          </Typography>
+        </Box>
 
-        {/* Mensagem de carregamento */}
-        {carregando && <p className="text-center text-gray-500">Carregando...</p>}
-        
-        {/* Mensagem de erro */}
-        {erro && <p className="text-center text-red-600">{erro}</p>}
+        {carregando && (
+          <Box display="flex" justifyContent="center" my={4}>
+            <CircularProgress />
+          </Box>
+        )}
 
-        {/* Exibe a tabela apenas se houver dados */}
+        {erro && (
+          <Box my={3}>
+            <Alert severity="error">{erro}</Alert>
+          </Box>
+        )}
+
         {dados.length > 0 && (
-          <div className="overflow-x-auto overflow-y-auto max-h-80 border border-gray-300 rounded-md shadow-md mt-4">
-            <table className="w-full border-collapse">
-              <thead className="bg-blue-600 text-white sticky top-0">
-                <tr>
+          <TableContainer component={Paper} sx={{ maxHeight: 400, mt: 4 }}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
                   {Object.keys(dados[0]).map((coluna, index) => (
-                    <th key={index} className="px-4 py-2 text-center border border-gray-300">{coluna}</th>
+                    <TableCell key={index} align="center" sx={{ fontWeight: "bold", backgroundColor: "#1976d2", color: "white" }}>
+                      {coluna}
+                    </TableCell>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
+                </TableRow>
+              </TableHead>
+              <TableBody>
                 {dados.map((linha, index) => (
-                  <tr key={index} className="hover:bg-gray-100">
+                  <TableRow key={index} hover>
                     {Object.values(linha).map((valor, idx) => (
-                      <td key={idx} className="px-4 py-2 text-center border border-gray-300">{valor}</td>
+                      <TableCell key={idx} align="center">
+                        {valor}
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
 
-        {/* Mensagem caso não haja dados */}
         {!carregando && dados.length === 0 && !erro && (
-          <p className="text-center text-gray-500">Nenhum dado encontrado.</p>
+          <Typography variant="body1" color="textSecondary" align="center" mt={3}>
+            Nenhum dado encontrado.
+          </Typography>
         )}
-      </div>
+      </Container>
     </Layout>
   );
 };
