@@ -11,7 +11,7 @@ const Relatorio = () => {
   useEffect(() => {
     const buscarRelatorio = async () => {
       try {
-        const response = await axios.get("https://projetos-n8n-n8n.wchbax.easypanel.host/webhook/realatorio");
+        const response = await axios.get("https://projetos-n8n-n8n.wchbax.easypanel.host/webhook/relatorio");
         setDados(response.data);
       } catch (error) {
         console.error("Erro ao buscar relatório:", error);
