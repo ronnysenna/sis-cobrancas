@@ -3,25 +3,31 @@ import { Link } from "react-router-dom";
 
 const Layout = ({ children }) => {
   return (
-    <div className="d-flex" style={{ minHeight: "100vh" }}>
+    <div className="flex min-h-screen">
       {/* Sidebar */}
-      <div className="bg-dark text-white p-3" style={{ width: "250px", minHeight: "100vh" }}>
-        <h3 className="text-center">Menu</h3>
-        <ul className="nav flex-column">
-          <li className="nav-item">
-            <Link to="/dashboard" className="nav-link text-white">Dashboard</Link>
+      <div className="bg-gray-900 text-white w-64 p-4 flex flex-col">
+        <h3 className="text-center text-xl font-semibold mb-4">Menu</h3>
+        <ul className="space-y-2">
+          <li>
+            <Link to="/dashboard" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+              Dashboard
+            </Link>
           </li>
-          <li className="nav-item">
-            <Link to="/relatorio" className="nav-link text-white">Relatório</Link> {/* Alterado de "Cobranças" para "Relatório" */}
+          <li>
+            <Link to="/relatorio" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+              Relatório
+            </Link>
           </li>
-          <li className="nav-item">
-            <Link to="/configuracoes" className="nav-link text-white">Configurações</Link>
+          <li>
+            <Link to="/configuracoes" className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition">
+              Configurações
+            </Link>
           </li>
         </ul>
       </div>
 
       {/* Conteúdo Principal */}
-      <div className="flex-grow-1 p-4 bg-light">
+      <div className="flex-grow p-6 bg-gray-100">
         {children}
       </div>
     </div>
