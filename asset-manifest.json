@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/static/js/main.be684564.js",
-    "index.html": "/index.html",
-    "main.be684564.js.map": "/static/js/main.be684564.js.map"
+    "main.js": "/sis-cobrancas/static/js/main.be684564.js",
+    "index.html": "/sis-cobrancas/index.html",
+    "main.be684564.js.map": "/sis-cobrancas/static/js/main.be684564.js.map"
   },
   "entrypoints": [
     "static/js/main.be684564.js"
