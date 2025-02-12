@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/sis-cobrancas/static/js/main.be684564.js",
+    "main.js": "/sis-cobrancas/static/js/main.ec554606.js",
     "index.html": "/sis-cobrancas/index.html",
-    "main.be684564.js.map": "/sis-cobrancas/static/js/main.be684564.js.map"
+    "main.ec554606.js.map": "/sis-cobrancas/static/js/main.ec554606.js.map"
   },
   "entrypoints": [
-    "static/js/main.be684564.js"
+    "static/js/main.ec554606.js"
   ]
 }
