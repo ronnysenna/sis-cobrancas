@@ -18,8 +18,8 @@ function App() {
 
           {/* Páginas principais */}
           <Route path="/login" element={<Login />} />
-          <Route path="/criar-conta" element={<CriarConta />} />
-          <Route path="/esqueceu-senha" element={<EsqueceuSenha />} />
+          <Route path="/criarconta" element={<CriarConta />} />
+          <Route path="/esqueceusenha" element={<EsqueceuSenha />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/relatorio" element={<Relatorio />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
