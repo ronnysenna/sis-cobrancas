@@ -64,7 +64,7 @@ const Login = () => {
 
         setTimeout(() => {
           setSucesso(false);
-          navigate("/dashboard");
+          navigate("/sis-cobrancas/dashboard");
         }, 2000);
       } else {
         console.error("❌ Resposta inválida:", data);
@@ -97,7 +97,7 @@ const Login = () => {
           borderRadius: 3,
         }}
       >
-        <img src="/img/logo.jpeg" alt="Logo" style={{ width: '360px', marginBottom: '16px' }} />
+        <img src="img/logo.jpeg" alt="Logo" style={{ width: '360px', marginBottom: '16px' }} />
 
         <TextField
           label="Email *"
@@ -128,10 +128,10 @@ const Login = () => {
 </Button>
 
 <Typography variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
-  <a href="/EsqueceuSenha" style={{ textDecoration: 'none', color: '#1976d2' }}>Esqueci minha senha</a>
+  <a href="/sis-cobrancas/EsqueceuSenha" style={{ textDecoration: 'none', color: '#1976d2' }}>Esqueci minha senha</a>
 </Typography>
 <Typography variant="body2" sx={{ mt: 1, textAlign: 'center' }}>
-  Não tem uma conta? <a href="/CriarConta" style={{ textDecoration: 'none', color: '#1976d2' }}>Criar conta</a>
+  Não tem uma conta? <a href="/sis-cobrancas/CriarConta" style={{ textDecoration: 'none', color: '#1976d2' }}>Criar conta</a>
 </Typography>
 
       </Paper>

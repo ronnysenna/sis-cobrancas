@@ -6,6 +6,7 @@ import EsqueceuSenha from "./pages/EsqueceuSenha";
 import Dashboard from "./pages/Dashboard";
 import Relatorio from "./pages/Relatorio";
 import Configuracoes from "./pages/Configuracoes";
+import RedefinirSenha from "./pages/RedefinirSenha";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/relatorio" element={<Relatorio />} />
         <Route path="/configuracoes" element={<Configuracoes />} />
+        <Route path="/redefinirsenha/:token" element={<RedefinirSenha />} />
+
 
         {/* Página 404 */}
         <Route path="*" element={<NotFound />} />
