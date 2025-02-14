@@ -144,7 +144,7 @@ const CriarConta = () => {
 
         {/* Link para Login */}
         <Box mt={2}>
-          <Link href="/" variant="body2" color="primary">
+          <Link href="/sis-cobrancas/login" variant="body2" color="primary">
             Já tem uma conta? Faça login
           </Link>
         </Box>

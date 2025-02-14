@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-
 import {
   TextField,
   Button,
@@ -13,7 +12,10 @@ import {
 import axios from "axios";
 
 const RedefinirSenha = () => {
-  const { token } = useParams(); // Captura o token da URL
+  const { token: rawToken } = useParams(); // Captura o token da URL
+  const token = rawToken?.split("_").pop(); // Pega apenas a última parte do token
+  console.log("🔑 Token extraído da URL:", token);
+
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -21,7 +23,22 @@ const RedefinirSenha = () => {
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log("🔍 URL Completa:", window.location.href);
+    console.log("🔑 Token capturado:", token);
+  }, [token]);
+
   const handleRedefinirSenha = async () => {
+    if (!token) {
+      setErro("Token inválido.");
+      return;
+    }
+
+    if (senha.length < 6) {
+      setErro("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
     if (senha !== confirmarSenha) {
       setErro("As senhas não coincidem.");
       return;
@@ -33,13 +50,16 @@ const RedefinirSenha = () => {
 
     try {
       const response = await axios.post(
-        "https://projetos-n8n-n8n.wchbax.easypanel.host/webhook/redefinir-senha", // Endpoint correto para redefinir senha
-        { token, senha }
+        "https://projetos-n8n-n8n.wchbax.easypanel.host/webhook/redefinirsenha",
+        { token, senha },
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      if (response.data.sucesso || response.data.success) {
-        setMensagem("Senha redefinida com sucesso! Você será redirecionado.");
-        setTimeout(() => navigate("/sis-cobrancas/login"), 3000);
+      console.log("🔍 Resposta do servidor:", response.data);
+
+      if (response.data.sucesso) {
+        setMensagem("✅ Senha redefinida com sucesso! Redirecionando para login...");
+        setTimeout(() => navigate("/login"), 3000); // Redireciona após 3 segundos
       } else {
         setErro(response.data.mensagem || "Token inválido ou expirado.");
       }
@@ -101,7 +121,7 @@ const RedefinirSenha = () => {
         <Button
           variant="contained"
           fullWidth
-          sx={{ mt: 3, bgcolor: "gray", "&:hover": { bgcolor: "black" } }}
+          sx={{ mt: 3, bgcolor: "black", "&:hover": { bgcolor: "gray" } }}
           onClick={handleRedefinirSenha}
           disabled={carregando}
         >

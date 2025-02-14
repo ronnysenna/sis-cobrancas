@@ -64,7 +64,7 @@ const Login = () => {
 
         setTimeout(() => {
           setSucesso(false);
-          navigate("/sis-cobrancas/dashboard");
+          navigate("/dashboard");
         }, 2000);
       } else {
         console.error("❌ Resposta inválida:", data);
