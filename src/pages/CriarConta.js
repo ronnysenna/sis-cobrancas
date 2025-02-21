@@ -17,10 +17,21 @@ const CriarConta = () => {
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [erro, setErro] = useState(null);
-  const [sucesso, setSucesso] = useState(false); // Estado para mostrar o popup
+  const [sucesso, setSucesso] = useState(false);
   const navigate = useNavigate();
 
   const handleCriarConta = async () => {
+    // Validações
+    if (!nome || !email || !senha || !confirmarSenha) {
+      setErro("Todos os campos são obrigatórios.");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setErro("Por favor, insira um e-mail válido.");
+      return;
+    }
+
     if (senha !== confirmarSenha) {
       setErro("As senhas não coincidem.");
       return;
@@ -30,7 +41,7 @@ const CriarConta = () => {
 
     try {
       const response = await fetch(
-        "https://projetos-n8n-n8n.wchbax.easypanel.host/webhook/api/registro",
+        "https://project-n8n.s85eiy.easypanel.host/webhook/criarConta",
         {
           method: "POST",
           headers: {
@@ -48,14 +59,14 @@ const CriarConta = () => {
       console.log("✅ Resposta do servidor:", data);
 
       if (!response.ok) {
-        throw new Error(`Erro ao criar conta: ${data.mensagem || "Erro desconhecido"}`);
+        throw new Error(data.mensagem || "Erro ao criar conta.");
       }
 
       setSucesso(true); // Exibir popup de sucesso
 
       // Aguardar 2 segundos e redirecionar para login
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 2000);
     } catch (error) {
       console.error("❌ Erro ao criar conta:", error);
@@ -125,13 +136,6 @@ const CriarConta = () => {
           onChange={(e) => setConfirmarSenha(e.target.value)}
         />
 
-        {/* Mensagem de Erro */}
-        {erro && (
-          <Typography color="error" sx={{ mt: 1 }}>
-            {erro}
-          </Typography>
-        )}
-
         {/* Botão Criar Conta */}
         <Button
           variant="contained"
@@ -153,11 +157,22 @@ const CriarConta = () => {
       {/* Snackbar de Sucesso */}
       <Snackbar
         open={sucesso}
-        autoHideDuration={2000} // Fecha automaticamente em 2 segundos
+        autoHideDuration={2000}
         onClose={() => setSucesso(false)}
       >
         <Alert severity="success" sx={{ width: "100%" }}>
           Conta criada com sucesso! Redirecionando...
+        </Alert>
+      </Snackbar>
+
+      {/* Snackbar de Erro */}
+      <Snackbar
+        open={!!erro}
+        autoHideDuration={6000}
+        onClose={() => setErro(null)}
+      >
+        <Alert severity="error" sx={{ width: "100%" }}>
+          {erro}
         </Alert>
       </Snackbar>
     </Box>
